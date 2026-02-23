@@ -1,0 +1,81 @@
+ <div class="upload-container">
+  <h3>Select Date Format</h3>
+
+  <select [(ngModel)]="selectedFormat"
+          name="dateFormat"
+          class="form-select">
+    <option *ngFor="let format of dateFormats" [value]="format.value">
+      {{ format.label }}
+    </option>
+  </select>
+</div>
+
+<div class="upload-container">
+
+  <div class="file-picker">
+    <input 
+      type="file" 
+      accept=".csv" 
+      (change)="onFileSelected($event)" 
+      id="csvFile"
+      hidden
+    />
+
+    <label for="csvFile" class="custom-file-button">
+      Choose CSV File
+    </label>
+
+    <div class="file-info" *ngIf="fileName$ | async as fileName">
+      <strong>Selected:</strong> {{ fileName }}
+    </div>
+  </div>
+  
+  <button 
+  class="upload-btn"
+  [disabled]="!(selectedFile$ | async)"
+  (click)="uploadFile()">
+  {{ 'Upload CSV' }}
+</button>
+
+
+  <div class="status">
+    <div class="result-container" *ngIf="result && result!.contributions!.length > 0; else noData">
+  <h2>Longest Collaboration</h2>
+
+  <mat-table [dataSource]="dataSource" class="mat-elevation-z4">
+
+    <ng-container matColumnDef="employee1">
+      <mat-header-cell *matHeaderCellDef> Employee ID #1 </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{ row.employee1 }} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="employee2">
+      <mat-header-cell *matHeaderCellDef> Employee ID #2 </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{ row.employee2 }} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="projectId">
+      <mat-header-cell *matHeaderCellDef> Project ID </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{ row.projectId }} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="daysWorked">
+      <mat-header-cell *matHeaderCellDef> Days worked </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{ row.daysWorked }} </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+  </mat-table>
+
+  <div class="pt-5">
+    Total days having worked together: {{ result?.totalDays }}
+  </div>
+</div>
+
+<ng-template #noData>
+  <p class="no-data">No collaboration data available.</p>
+</ng-template>
+  </div>
+</div>
